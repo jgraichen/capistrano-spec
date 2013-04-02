@@ -15,11 +15,11 @@ require 'capistrano'
             end
             desc "More fake tasks!"
             task :other_thing do
-              # 
+              #
             end
             desc "You get the picture..."
             task :stuff_and_things do
-              # 
+              #
             end
           end
         end
