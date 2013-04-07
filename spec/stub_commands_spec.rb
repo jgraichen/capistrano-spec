@@ -19,6 +19,11 @@ describe 'Command stubbing' do
           return "#{stream}: #{data}"
         end
       end
+
+      def no_block
+      	run 'pwd'
+      	nil
+      end
     end
   end
 
@@ -40,5 +45,25 @@ describe 'Command stubbing' do
   it 'should allow to stub stream' do
     @configuration.stub_command 'pwd', :data => '/stubbed/path', :stream => :err
     @configuration.custom_pwd.should == 'err: /stubbed/path'
+  end
+
+  it 'should allow to stub commands without block' do
+    @configuration.stub_command 'pwd'
+    expect { @configuration.no_block }.to_not raise_error(NoMethodError)
+  end
+
+  it 'should allow to stub command processing' do
+    @configuration.stub_command 'pwd', with: proc { |cmd| cmd }
+    @configuration.remote_pwd.should == 'pwd'
+  end
+
+  it 'should allow to stub command processing with error' do
+    @configuration.stub_command 'pwd', raise: ::Capistrano::CommandError
+    expect { @configuration.no_block }.to raise_error(::Capistrano::CommandError)
+  end
+
+  it 'should allow to stub command processing with CommandError' do
+    @configuration.stub_command 'pwd', fail: true
+    expect { @configuration.no_block }.to raise_error(::Capistrano::CommandError)
   end
 end
