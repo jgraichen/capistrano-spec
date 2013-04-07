@@ -160,13 +160,14 @@ module Capistrano
       define :have_run do |cmd|
 
         match do |configuration|
+          @configuration = configuration
           run = configuration.runs[cmd]
-
           run
         end
 
         failure_message_for_should do |actual|
-          "expected configuration to run #{cmd}, but did not"
+          runs = @configuration.runs.keys.join "\n  "
+          "expected configuration to run `#{cmd}`, but did not. Has run: \n  #{runs}"
         end
 
       end
